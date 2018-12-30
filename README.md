@@ -162,4 +162,14 @@ Autorización basada en roles:
        * ej. gano puntos por review de otros de mis standup, avance, proyectos
    * Puede haber PUNTOS para un proyecto, ej. si completo una tarea ...
 
+Para *desacoplar* los permisos del resto (en especial express), de la documentacion de finale ...
 
+Controller | Endpoint | Description
+-----------|----------|------------
+userResource.create | POST /users | Create a user
+userResource.list | GET /users  | Get a listing of users
+userResource.read | GET /users/:id | Get details about a user
+userResource.update | PUT /users/:id | Update a user
+userResource.delete | DELETE /users/:id | Delete a user
+
+Además vamos a necesitar TDD ... estoy viendo http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/
