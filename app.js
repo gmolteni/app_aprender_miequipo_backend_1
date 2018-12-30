@@ -1,4 +1,4 @@
-//INFO: api rest para db relacional, ejemplo 1
+//INFO: api rest para db relacional, modulo, para poder testear
 //ASK: https://pizarra.podemosaprender.org/2018/04/contacto.html
 //ASK: aprender@mauriciocap.com
 
@@ -17,8 +17,6 @@ const ormInstance = require('./models');
 //A: a CONFIGURED ormInstance with models
 
 var app = express();
-
-app.set('port', process.env.PORT || 3000); //A: si me pasan PORT= tengo que usar ese (ej. heroku)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -94,7 +92,7 @@ finale.initialize({
 var restResources= {};
 
 Object.keys(ormInstance.models).forEach(function (modelName) {
-	console.log(modelName);
+	console.log("MODEL",modelName);
 	let r= restResources[modelName]= finale.resource({
 		model: ormInstance.models[modelName],
 		endpoints: ['/'+modelName.toLowerCase()+'s', '/'+modelName.toLowerCase()+'s/:id'],
@@ -104,14 +102,5 @@ Object.keys(ormInstance.models).forEach(function (modelName) {
 });
 //A: cree urls (endpoints) REST para todas las entidades definidas, de tipo (entidad)s para preguntar la lista y (entidad)/id para trabajar sobre un solo elemento
 
-var server= http.createServer(app); //A: configure servidor web
-ormInstance
-  .sync({ force: 0 }) //A: actualice db segun modelos (force: 1 elimina y vuelve a crear tablas)
-  .then(function() {
-    server.listen(app.get('port'),function() {
-      var host = server.address().address,
-          port = server.address().port;
-      console.log('listening at http://%s:%s', host, port);
-    });
-}); //A: lance servidor y mostre en que puerto
-
+app.ormInstance= ormInstance;
+module.exports= app;

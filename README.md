@@ -41,7 +41,7 @@ A: tengo los módulos necesarios
 Revisar en config (debería estar lista para tomar cfg de variables de ambiente ej en heroku)
 
 ```
-node app.js
+node server.js
 ```
 
 A: lancé el servidor
@@ -50,6 +50,8 @@ A: lancé el servidor
 ## Uso
 
 La llamaría la spa https://github.com/podemosaprender/app_aprender_miequipo_web_nuxt_1
+
+XXX:convertir a tests en __tests__  como el ejemplo, para ejecutar con ```npm run test```
 
 ### Elegí que host vas a usar
 
@@ -172,4 +174,5 @@ userResource.read | GET /users/:id | Get details about a user
 userResource.update | PUT /users/:id | Update a user
 userResource.delete | DELETE /users/:id | Delete a user
 
-Además vamos a necesitar TDD ... estoy viendo http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/
+
+XXX:convertir a tests en __tests__  como el ejemplo, para ejecutar con ```npm run test```
