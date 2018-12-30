@@ -16,6 +16,9 @@ const admin= require('./admin.js');
 const ormInstance = require('./models');
 //A: a CONFIGURED ormInstance with models
 
+const CfgJwt= require("./config/token.json");
+//A: configuracion para NUESTRO token
+
 var app = express();
 
 app.use(bodyParser.json());
@@ -31,14 +34,12 @@ app.use(function(req, res, next) {
 });
 //A: devolver headers que necesita el browser para CORS
 
-secret= 'SecretoLasPelotas'; //U: web token key //XXX:SEC configurar, en config/... usar clave segura (RSA?)
-
 function requireValidToken(req, res, context) { //U: middleware para finale que decide permisos 
 	//XXX: desacoplar permisos de finale, //SEE: https://github.com/Aclify/aclify
 	return new Promise( (resolve, reject) => {
 		let tk= req.get('X-pa-token');
 		console.log("AUTH TOK",tk);
-		var credentials= tk && jwt.verify(tk, secret);
+		var credentials= tk && jwt.verify(tk, CfgJwt.secret);
 		if (credentials) { //A: tiene un token valido que le dio este backend
 			if (req.method=="GET") { 
 				//A: solo consulta, por ahora le dejo ver TODO XXX:SEC filtrar ej mails!
@@ -69,13 +70,13 @@ app.get("/login",function (req,res) { //U: ruta especial, recibe un token o usua
 				admin.userForOAuth(udata)
 				.then( user => {
 					console.log("AUTH LOGIN USER", user.id); 
-					let token= jwt.sign({ user: user.id, }, secret, { expiresIn: 60 * 60 }); 
+					let token= jwt.sign({ user: user.id, }, CfgJwt.secret, { expiresIn: 60 * 60 }); 
 					res.json({id: user.id, nick: user.nick, token: token});
 				})
 			})
 			.catch( error => {
 				console.log("AUTH LOGIN ERROR", error);
-				res.send("ERR");
+				res.status(401).send("invalid token");
 			})
 	} //XXX: agregar caso token OAuth de Facebook, y caso usuario / clave
 	else {
