@@ -2,11 +2,13 @@
 
 const request = require('supertest');
 const app = require('../app');
-
-const jwt= require('jsonwebtoken');
-const CfgJwt= require("../config/token.json");
+const app_token= require('../app_token'); //XXX:encapsular uso de jwt
 
 describe('Probar url principales (no funcionalidad)', () => {
+		beforeAll( () => {
+			return app.ormInstance.sync({ force: 1 }); //A: cree las tablas de cero
+		});
+
     test('Responde 404 not found en /', () => {
       return request(app).get("/").expect(404);
     });
@@ -24,9 +26,11 @@ describe('Probar url principales (no funcionalidad)', () => {
 				.expect(200)
 				.expect(res => {
 					expect(res.body.id).toBeGreaterThanOrEqual(1);
-					expect(res.body.nick).toBe("mauriciocap");
-					var tk= jwt.verify(res.body.token, CfgJwt.secret); //A: si lanza excepcion, falla test como queremos
-					expect(tk).not.toBeNull();
-				});
+					expect(res.body.nick).toBe("mauriciocap@gmail.com"); //A: cuando me registro, el nick es el mail
+					var credentials= app_token.credentials(res.body.token); //A: si lanza excepcion, falla test como queremos
+					console.log("CREDENTIALS",credentials);
+					expect(credentials).not.toBeNull();
+					expect(credentials.user).toBe(res.body.id);
+				})
 		});
 });

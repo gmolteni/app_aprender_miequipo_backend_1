@@ -7,17 +7,13 @@ const finale = require('finale-rest');
 const http = require('http');
 const express = require('express');
 const	bodyParser = require('body-parser');
-const jwt= require('jsonwebtoken');
 
-const oauth= require("./oauth.js");
+const app_token= require("./app_token.js");
 const admin= require('./admin.js');
 //A: required libraries
 
 const ormInstance = require('./models');
 //A: a CONFIGURED ormInstance with models
-
-const CfgJwt= require("./config/token.json");
-//A: configuracion para NUESTRO token
 
 var app = express();
 
@@ -38,8 +34,7 @@ function requireValidToken(req, res, context) { //U: middleware para finale que 
 	//XXX: desacoplar permisos de finale, //SEE: https://github.com/Aclify/aclify
 	return new Promise( (resolve, reject) => {
 		let tk= req.get('X-pa-token');
-		console.log("AUTH TOK",tk);
-		var credentials= tk && jwt.verify(tk, CfgJwt.secret);
+		var credentials= app_token.credentials(tk);
 		if (credentials) { //A: tiene un token valido que le dio este backend
 			if (req.method=="GET") { 
 				//A: solo consulta, por ahora le dejo ver TODO XXX:SEC filtrar ej mails!
@@ -64,16 +59,8 @@ function requireValidToken(req, res, context) { //U: middleware para finale que 
 
 app.get("/login",function (req,res) { //U: ruta especial, recibe un token o usuario y clave
 	if (req.query.tg) { //A: recibimos token OAuth de google
-		oauth.userForGoogle(req.query.tg)	
-			.then( udata => {
-				console.log("AUTH LOGIN GOOGLE", udata);
-				admin.userForOAuth(udata)
-				.then( user => {
-					console.log("AUTH LOGIN USER", user.id); 
-					let token= jwt.sign({ user: user.id, }, CfgJwt.secret, { expiresIn: 60 * 60 }); 
-					res.json({id: user.id, nick: user.nick, token: token});
-				})
-			})
+		app_token.loginWithGoogle(req.query.tg)	
+			.then( udata => { res.json(udata); })
 			.catch( error => {
 				console.log("AUTH LOGIN ERROR", error);
 				res.status(401).send("invalid token");
