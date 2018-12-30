@@ -118,7 +118,7 @@ XXX:SEC permisos
 curl -X DELETE ${HOST}users/1
 ```
 
-## Crear app en heroku
+## Crear app en heroku (opcional)
 
 Sigo <https://sequelize.readthedocs.io/en/1.7.0/articles/heroku/>
 
@@ -137,4 +137,29 @@ heroku ps:scale web=1
 heroku open
 heroku logs --tail
 ```
+
+## Próximos pasos
+
+### Seguridad!
+
+Limitar ataques de fuerza bruta: https://www.npmjs.com/package/express-rate-limit ?
+
+Autorización basada en roles:
+
+* Si no te logueaste, sólo te dejamos loguearte, pero no atacar tipo fuerza bruta
+* Si te logueaste pero tu mail no esta confirmado, sólo te dejamos ver info pública
+* En principio sólo tenés permiso para modificar y ver TU propia info (incluido que proyectos y oficios te interesan)
+* Podés borrar tu usuario, la baja es lógica y borramos todos tus datos MENOS el nick.
+
+* Recursos compartidos:
+   * Siempre baja lógica, y versionados (guardamos copia de lo anterior)
+   * Puede haber un NIVEL segun que hice (ej. complete X datos) o administrado a mano
+   * Además hay "relaciones" con lo que modifico, ej. no puedo modificar un proyecto si no soy "editor", no puedo ver si no soy "participante"
+   * Para crear/modificar autorización por PUNTOS vs. tipo/cantidad de cambios
+       * ej. si recién me anoté tengo 10 puntos, crear un proyecto me lleva 5, oficio 10
+       * ej. otros usuarios con más puntos me pueden dar creditos
+       * ej. gano puntos si completé mi github + blog + trello
+       * ej. gano puntos por review de otros de mis standup, avance, proyectos
+   * Puede haber PUNTOS para un proyecto, ej. si completo una tarea ...
+
 
