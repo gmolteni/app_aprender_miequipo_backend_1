@@ -3,9 +3,11 @@ module.exports = function(sequelize, DataTypes) {
     nick: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: 'nick',
 		},
 		email: { 
 			type: DataTypes.STRING,
+			unique: 'email',
 			validate: {
 				isEmail: true,
 			}

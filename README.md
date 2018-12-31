@@ -51,7 +51,7 @@ A: lancé el servidor
 
 La llamaría la spa https://github.com/podemosaprender/app_aprender_miequipo_web_nuxt_1
 
-XXX:convertir a tests en __tests__  como el ejemplo, para ejecutar con ```npm run test```
+XXX:convertir a tests en tests como el ejemplo, para ejecutar con ```npm run test```
 
 ### Elegí que host vas a usar
 
@@ -149,8 +149,11 @@ Limitar ataques de fuerza bruta: https://www.npmjs.com/package/express-rate-limi
 Autorización basada en roles:
 
 * Si no te logueaste, sólo te dejamos loguearte, pero no atacar tipo fuerza bruta
+
 * Si te logueaste pero tu mail no esta confirmado, sólo te dejamos ver info pública
+
 * En principio sólo tenés permiso para modificar y ver TU propia info (incluido que proyectos y oficios te interesan)
+
 * Podés borrar tu usuario, la baja es lógica y borramos todos tus datos MENOS el nick.
 
 * Recursos compartidos:
@@ -175,4 +178,4 @@ userResource.update | PUT /users/:id | Update a user
 userResource.delete | DELETE /users/:id | Delete a user
 
 
-XXX:convertir a tests en __tests__  como el ejemplo, para ejecutar con ```npm run test```
+XXX:convertir a tests en tests como el ejemplo, para ejecutar con ```npm run test```
