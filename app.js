@@ -37,8 +37,18 @@ function requireValidToken(req, res, context) { //U: middleware para finale que 
 	if (credentials) { //A: tiene un token valido que le dio este backend
 		return authorization.usuarioPuede(credentials,req)
 			.then( siPuede => { 
-				if (siPuede) { return context.continue }
-				else { res.status(401).send("not allowed"); return context.stop; }
+				if (siPuede==true) { return context.continue } //A: seguir con finale
+				else if (typeof(siPuede)=="object") { //A: devolver lo que nos pasaron y cortar aca
+					if(siPuede.continue) {
+						context.options= siPuede.options; return context.continue;
+					}
+					else {
+						res.status(siPuede.status || 200).json(siPuede.body); return context.stop; 
+					}
+				}
+				else { //A: no se puede
+					res.status(401).send("not allowed"); return context.stop; 
+				}
 			});
 	} 
 	//A: DFLT no tiene token valido O no tiene permisos //XXX:distinguir mensaje error?
@@ -73,7 +83,7 @@ Object.keys(ormInstance.models).forEach(function (modelName) {
 	let r= restResources[modelName]= finale.resource({
 		model: ormInstance.models[modelName],
 		endpoints: ['/'+modelName.toLowerCase()+'s', '/'+modelName.toLowerCase()+'s/:id'],
-		associations: true
+		associations: true,
 	});
 	r.all.auth(requireValidToken);
 });
