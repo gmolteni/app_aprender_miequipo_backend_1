@@ -8,8 +8,9 @@ const http = require('http');
 const express = require('express');
 const	bodyParser = require('body-parser');
 
-const app_token= require("./app_token.js");
-const admin= require('./admin.js');
+const app_token= require("./app_token");
+const admin= require('./admin');
+const authorization= require('./authorization');
 //A: required libraries
 
 const ormInstance = require('./models');
@@ -31,30 +32,18 @@ app.use(function(req, res, next) {
 //A: devolver headers que necesita el browser para CORS
 
 function requireValidToken(req, res, context) { //U: middleware para finale que decide permisos 
-	//XXX: desacoplar permisos de finale, //SEE: https://github.com/Aclify/aclify
-	return new Promise( (resolve, reject) => {
-		let tk= req.get('X-pa-token');
-		var credentials= app_token.credentials(tk);
-		if (credentials) { //A: tiene un token valido que le dio este backend
-			if (req.method=="GET") { 
-				//A: solo consulta, por ahora le dejo ver TODO XXX:SEC filtrar ej mails!
-				resolve(context.continue); 
-				return;
-			}
-			else if (req.path=="/users/"+credentials.user) {
-				//A: puede modificar su propio usuario
-				//XXX: borrado logico? consistencia?
-				resolve(context.continue); 
-				return;
-			}
-			else {
-				console.log("AUTH ERR",req.method, req.path,credentials);
-			}
-		} 
-		//A: DFLT no tiene token valido O no tiene permisos //XXX:distinguir mensaje error?
-		res.status(401).send("invalid token");
-		resolve(context.stop);
-	});
+	let tk= req.get('X-pa-token');
+	var credentials= app_token.credentials(tk);
+	if (credentials) { //A: tiene un token valido que le dio este backend
+		return authorization.usuarioPuede(credentials,req)
+			.then( siPuede => { 
+				if (siPuede) { return context.continue }
+				else { res.status(401).send("not allowed"); return context.stop; }
+			});
+	} 
+	//A: DFLT no tiene token valido O no tiene permisos //XXX:distinguir mensaje error?
+	res.status(401).send("invalid token");
+	return context.stop;
 }
 
 app.get("/login",function (req,res) { //U: ruta especial, recibe un token o usuario y clave
