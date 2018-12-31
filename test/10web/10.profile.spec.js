@@ -36,26 +36,21 @@ describe('Funcionalidad perfil de usuario', () => {
 			})
 	});
 
-/*
 	test('Puedo cambiar mi email', (done) => {
-		return request(app).put("/users/"+mi.user_id)
-			.set('X-pa-token',mi.token)
-			.send({email: "superman@x.com"})
-			.expect( res => {
-				console.log("USER ME U MAIL",res.body);
-				expect(res.body.id).toBe(mi.user_id);
-      	expect(res.body.email).toBe('superman@x.com');
+		return client.set_user_data({email: "superman@x.com"})
+			.then( res => {
+				console.log("USER ME U MAIL",res.data);
+				expect(res.data.id).toBe(client.get_user_id());
+      	expect(res.data.email).toBe('superman@x.com');
 
-				return request(app).get("/users/"+mi.user_id)
-				.set('X-pa-token',mi.token)
-				.expect(200)
-				.expect(res => {
-					console.log("USER ME U MAIL QUERY",res.body);
-					expect(res.body.id).toBe(mi.user_id);
- 		     	expect(res.body.email).toBe('superman@x.com');
-				});
+				return client.get_user_me()
+					.then(res => {
+						console.log("USER ME U MAIL QUERY",res.data);
+						expect(res.data.id).toBe(client.get_user_id());
+						expect(res.data.email).toBe('superman@x.com');
+						done();
+					});
 			})
-			.end(done);
 	});
-*/
+
 });
