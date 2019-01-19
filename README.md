@@ -76,7 +76,10 @@ devuelve el siguiente json para mostrar en la ui Y el token para las próximas l
 
 Me guardo el token en una variable de ambiente para llamadas futuras (porque expira)
 
+
+```
 TOK=`curl ${HOST}login?tg=tk1 | cut '-d"' -f10`
+```
 
 ### Consultar usuarios
 
@@ -97,7 +100,7 @@ Se crean con POST en la coleccion correspondiente (users, projects, etc.) pasand
 XXX:SEC permisos
 
 ```
-curl -H "X-pa-token: $TOK" -X POST -H "Content-Type: application/json" -d '{"username":"Ubaldo Uno", "email":"ubaldo@uno.com"}'  ${HOST}users
+curl -H "X-pa-token: $TOK" -X POST -H "Content-Type: application/json" -d '{"username":"Ubaldo Uno", "email":"ubaldo@uno.com", "nick":"pirulo"}'  ${HOST}users
 ```
 
 ### Modificar elementos
